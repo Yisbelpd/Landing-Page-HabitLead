@@ -32,6 +32,11 @@ export default function App() {
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [userRole, setUserRole] = useState("Director / Manager");
 
+  // Connection App state
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  const [connectingState, setConnectingState] = useState<"idle" | "connecting" | "success">("idle");
+  const [connectionEmail, setConnectionEmail] = useState("");
+
   // Premium Tier simulated state
   const [selectedPlan, setSelectedPlan] = useState<"free" | "premium">("premium");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -455,6 +460,29 @@ export default function App() {
             ))}
           </div>
 
+          {/* Sutil connection button */}
+          <div className="mt-16 text-center animate-fadeIn">
+            <button
+              onClick={() => {
+                setConnectionModalOpen(true);
+                if (registeredEmail) {
+                  setConnectingState("connecting");
+                  setTimeout(() => {
+                    setConnectingState("success");
+                    triggerToast("Conectado con éxito a tu panel individual de HabitLead");
+                  }, 1500);
+                } else {
+                  setConnectingState("idle");
+                }
+              }}
+              className="inline-flex items-center gap-2.5 px-8 py-3 bg-white border border-stone-200 hover:border-malva/40 text-stone-600 hover:text-brand-dark rounded-full text-xs uppercase tracking-widest font-sans font-light transition-all duration-300 hover:shadow-sm cursor-pointer"
+            >
+              <Compass className="h-3.5 w-3.5 text-malva" />
+              <span>Conectar a la app HabitLead</span>
+              <ArrowRight className="h-3.5 w-3.5 text-stone-300 group-hover:text-malva" />
+            </button>
+          </div>
+
         </div>
       </section>
 
@@ -769,6 +797,30 @@ export default function App() {
             );
           })}
         </div>
+
+        {/* Sutil connection button after FAQ */}
+        <div className="mt-16 text-center border-t border-stone-100/70 pt-10 animate-fadeIn">
+          <p className="text-stone-400 text-xs font-light mb-4">¿Listo para conectar tu diario individual de hábitos?</p>
+          <button
+            onClick={() => {
+              setConnectionModalOpen(true);
+              if (registeredEmail) {
+                setConnectingState("connecting");
+                setTimeout(() => {
+                  setConnectingState("success");
+                  triggerToast("Conectado con éxito a tu panel individual de HabitLead");
+                }, 1500);
+              } else {
+                setConnectingState("idle");
+              }
+            }}
+            className="inline-flex items-center gap-2.5 px-8 py-3 bg-white border border-stone-200 hover:border-malva/40 text-stone-600 hover:text-brand-dark rounded-full text-xs uppercase tracking-widest font-sans font-light transition-all duration-300 hover:shadow-sm cursor-pointer"
+          >
+            <Compass className="h-3.5 w-3.5 text-malva" />
+            <span>Conectar a la app HabitLead</span>
+            <ArrowRight className="h-3.5 w-3.5 text-stone-300 group-hover:text-malva" />
+          </button>
+        </div>
       </section>
 
       {/* METRIC HIGHLIGHT / TRUST BAR */}
@@ -854,6 +906,181 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* CONNECTION TO THE APP MODAL */}
+      <AnimatePresence>
+        {connectionModalOpen && (
+          <div className="fixed inset-0 bg-stone-950/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.25, cubicBezier: [0.16, 1, 0.3, 1] }}
+              className="bg-white rounded-3xl border border-stone-200/80 p-6 md:p-8 w-full max-w-md shadow-2xl relative overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setConnectionModalOpen(false)}
+                className="absolute top-5 right-5 text-stone-400 hover:text-stone-700 p-1.5 rounded-full hover:bg-stone-100 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              {/* Modal Content */}
+              {connectingState === "idle" && (
+                <div className="space-y-6 text-center pt-2">
+                  <div className="h-12 w-12 bg-malva/10 text-malva rounded-full flex items-center justify-center mx-auto">
+                    <Compass className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-display text-xl font-bold tracking-tight text-brand-dark">
+                      Accede a la app HabitLead
+                    </h3>
+                    <p className="text-stone-500 text-xs sm:text-sm font-light leading-relaxed">
+                      Conecta tus datos de progreso local o sincroniza tu diario de bienestar individual con nuestro panel seguro.
+                    </p>
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!connectionEmail) return;
+                      setConnectingState("connecting");
+                      // Sincroniza
+                      setTimeout(() => {
+                        setConnectingState("success");
+                        setRegisteredEmail(connectionEmail);
+                        setIsRegistered(true);
+                        localStorage.setItem("habitlead_beta_registered", connectionEmail);
+                        triggerToast("¡Sincronización de hábitos exitosa!");
+                      }, 2000);
+                    }}
+                    className="space-y-4 text-left"
+                  >
+                    <div>
+                      <label htmlFor="modal-email" className="text-[10px] font-mono uppercase tracking-widest text-stone-400 font-semibold mb-1.5 block">
+                        Ingresa tu correo individual
+                      </label>
+                      <input
+                        type="email"
+                        id="modal-email"
+                        required
+                        placeholder="ejemplo@correo.com"
+                        value={connectionEmail}
+                        onChange={(e) => setConnectionEmail(e.target.value)}
+                        className="w-full bg-stone-50 hover:bg-stone-100/70 focus:bg-white text-stone-800 text-xs sm:text-sm border border-stone-200 rounded-xl px-4 py-3 outline-none focus:border-malva transition-colors focus:ring-1 focus:ring-malva"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-brand-dark hover:bg-stone-900 text-white font-semibold uppercase tracking-wider text-[11px] py-3.5 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span>Establecer Conexión</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </button>
+                    
+                    <p className="text-[10px] text-stone-400 text-center">
+                      🔒 Encriptación RSA-2048 • Tus hábitos son puramente personales.
+                    </p>
+                  </form>
+                </div>
+              )}
+
+              {connectingState === "connecting" && (
+                <div className="py-10 text-center space-y-6">
+                  <div className="relative h-14 w-14 mx-auto flex items-center justify-center">
+                    <span className="absolute inset-0 rounded-full border-2 border-stone-100"></span>
+                    <span className="absolute inset-0 rounded-full border-2 border-t-malva animate-spin"></span>
+                    <Compass className="h-5 w-5 text-malva animate-pulse" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-display text-sm font-semibold text-brand-dark">
+                      Sincronizando con el servidor HabitLead...
+                    </h3>
+                    <p className="text-stone-400 text-[11px] font-mono">
+                      Cargando túnel individual e histórico del diario
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {connectingState === "success" && (
+                <div className="space-y-6 pt-2">
+                  <div className="h-12 w-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto">
+                    <Check className="h-5 w-5" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="font-display text-lg font-bold text-stone-800">
+                      ¡App Conectada!
+                    </h3>
+                    <p className="text-stone-400 text-xs font-mono">
+                      Usuario: <span className="text-stone-600 font-sans font-medium">{connectionEmail || registeredEmail || "usuario@habitlead.com"}</span>
+                    </p>
+                  </div>
+
+                  {/* MINI INTERACTIVE HABIT TRACKER PANEL / WORKSPACE */}
+                  <div className="bg-stone-50 rounded-2xl border border-stone-200/50 p-4 space-y-3.5">
+                    <div className="flex justify-between items-center pb-2 border-b border-stone-200/40">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-stone-400 font-semibold">Tus Hábitos del Día</span>
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 font-mono px-2 py-0.5 rounded">En línea</span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <label className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-stone-100 hover:border-stone-200/80 transition-all cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded border-stone-300 text-malva focus:ring-malva" />
+                        <span className="text-xs text-stone-700 font-light">Dormir 7.5h+ (Descanso Profundo)</span>
+                      </label>
+                      <label className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-stone-100 hover:border-stone-200/80 transition-all cursor-pointer">
+                        <input type="checkbox" defaultChecked className="rounded border-stone-300 text-malva focus:ring-malva" />
+                        <span className="text-xs text-stone-700 font-light">10 min Meditación de Claridad</span>
+                      </label>
+                      <label className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-stone-100 hover:border-stone-200/80 transition-all cursor-pointer">
+                        <input type="checkbox" className="rounded border-stone-300 text-malva focus:ring-malva" />
+                        <span className="text-xs text-stone-500 font-light">20 min Mañana Analógica (Cero pantallas)</span>
+                      </label>
+                      <label className="flex items-center gap-2.5 bg-white p-2.5 rounded-xl border border-stone-100 hover:border-stone-200/80 transition-all cursor-pointer">
+                        <input type="checkbox" className="rounded border-stone-300 text-malva focus:ring-malva" />
+                        <span className="text-xs text-stone-500 font-light">Respiración Coherente (3m ante tensión)</span>
+                      </label>
+                    </div>
+
+                    <div className="text-center font-mono pt-1">
+                      <p className="text-[10px] text-stone-400">Constancia actual: <span className="text-malva font-semibold">86% esta semana</span></p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setConnectionModalOpen(false)}
+                      className="flex-1 bg-stone-150 hover:bg-stone-200 text-stone-700 font-semibold uppercase tracking-wider text-[10px] py-3 rounded-xl transition-all cursor-pointer text-center"
+                    >
+                      Ir al Panel Completo
+                    </button>
+                    <button
+                      onClick={() => {
+                        setConnectionEmail("");
+                        setConnectingState("idle");
+                        setRegisteredEmail("");
+                        setIsRegistered(false);
+                        localStorage.removeItem("habitlead_beta_registered");
+                        triggerToast("Sesión cerrada");
+                      }}
+                      className="px-4 border border-stone-200 hover:bg-stone-50 text-stone-400 hover:text-stone-600 rounded-xl transition-colors cursor-pointer text-xs"
+                      title="Cerrar sesión"
+                    >
+                      Desconectar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -220,7 +220,7 @@ export default function App() {
 
           {/* Big Editorial Title */}
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[70px] font-bold tracking-tight text-brand-dark leading-[1.08] max-w-4xl mx-auto mb-6">
-            Lleva el registro de tus <br className="hidden sm:inline" /> hábitos saludables diariamente y eleva tu <span className="text-malva font-medium italic underline decoration-stone-200 decoration-wavy underline-offset-8">liderazgo integral</span>.
+            Lleva el registro de tus <br className="hidden sm:inline" /> hábitos saludables diariamente y eleva tu <span className="text-malva font-medium italic">liderazgo integral</span>.
           </h1>
 
           {/* Strategic Short Subtitle */}
@@ -475,11 +475,11 @@ export default function App() {
                   setConnectingState("idle");
                 }
               }}
-              className="inline-flex items-center gap-2.5 px-8 py-3 bg-white border border-stone-200 hover:border-malva/40 text-stone-600 hover:text-brand-dark rounded-full text-xs uppercase tracking-widest font-sans font-light transition-all duration-300 hover:shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-malva-dark hover:bg-[#5b4a5e] text-white rounded-full text-xs uppercase tracking-widest font-sans font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer"
             >
-              <Compass className="h-3.5 w-3.5 text-malva" />
+              <Compass className="h-3.5 w-3.5 animate-pulse" />
               <span>Conectar a la app HabitLead</span>
-              <ArrowRight className="h-3.5 w-3.5 text-stone-300 group-hover:text-malva" />
+              <ArrowRight className="h-3.5 w-3.5 opacity-80" />
             </button>
           </div>
 
@@ -814,11 +814,11 @@ export default function App() {
                 setConnectingState("idle");
               }
             }}
-            className="inline-flex items-center gap-2.5 px-8 py-3 bg-white border border-stone-200 hover:border-malva/40 text-stone-600 hover:text-brand-dark rounded-full text-xs uppercase tracking-widest font-sans font-light transition-all duration-300 hover:shadow-sm cursor-pointer"
+            className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-malva-dark hover:bg-[#5b4a5e] text-white rounded-full text-xs uppercase tracking-widest font-sans font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer"
           >
-            <Compass className="h-3.5 w-3.5 text-malva" />
+            <Compass className="h-3.5 w-3.5 animate-pulse" />
             <span>Conectar a la app HabitLead</span>
-            <ArrowRight className="h-3.5 w-3.5 text-stone-300 group-hover:text-malva" />
+            <ArrowRight className="h-3.5 w-3.5 opacity-80" />
           </button>
         </div>
       </section>
